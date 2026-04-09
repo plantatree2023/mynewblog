@@ -21,6 +21,10 @@ git rm --cached <your-file>
 ## 有用的链接
 [本页面链接](https://plantatree2023.github.io/mynewblog): https://plantatree2023.github.io/mynewblog
 
+使用的引擎: Hugo
+
+文档地址: [https://gohugo.io/documentation/](https://gohugo.io/documentation/)
+
 使用的主题: LoveIt
 
 仓库地址: [https://github.com/dillonzq/LoveIt](https://github.com/dillonzq/LoveIt)
