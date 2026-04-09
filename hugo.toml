@@ -988,17 +988,17 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
     [languages.zh-cn.params]
       [languages.zh-cn.params.search]
         enable = true
-        type = "algolia"
+        type = "fuse"
         contentLength = 4000
         placeholder = ""
         maxResultLength = 10
         snippetLength = 50
         highlightTag = "em"
         absoluteURL = false
-        [languages.zh-cn.params.search.algolia]
-          index = "index"
-          appID = "GZT24PWKNT"
-          searchKey = "634ab679e825b815de2663de38908f9d"
+        # [languages.zh-cn.params.search.algolia]
+        #   index = "index"
+        #   appID = "GZT24PWKNT"
+        #   searchKey = "634ab679e825b815de2663de38908f9d" copied from example, not my id
       [languages.zh-cn.params.home]
         rss = 10
         [languages.zh-cn.params.home.profile]
@@ -1006,7 +1006,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
           gravatarEmail = ""
           avatarURL = "/images/avatar.png"
           title = ""
-          subtitle = "一个简洁、优雅且高效的 Hugo 主题"
+          subtitle = "种树最好的时间是十年前，其次是现在"
           typeit = true
           social = true
           disclaimer = ""
