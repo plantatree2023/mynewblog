@@ -12,6 +12,9 @@ git status
 git add .
 git commit -m "Commit message"
 git push origin main
+
+# Remove a file accidentally checked in
+git rm --cached <your-file>
 ```
 
 [页面链接](https://plantatree2023.github.io/mynewblog)
