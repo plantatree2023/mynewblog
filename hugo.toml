@@ -2,7 +2,7 @@ baseURL = "https://example.com"
 
 # theme
 # 主题
-theme = 'loveit'
+theme = "loveit"
 # themes directory
 # 主题目录
 themesDir = "themes/"
@@ -13,13 +13,13 @@ title = "种树的时间"
 
 # determines default content language ["en", "zh-cn", "fr", "pl", ...]
 # 设置默认的语言 ["en", "zh-cn", "fr", "pl", ...]
-defaultContentLanguage = "en"
+defaultContentLanguage = "zh-cn"
 # language code ["en", "zh-CN", "fr", "pl", ...]
 # 网站语言, 仅在这里 CN 大写 ["en", "zh-CN", "fr", "pl", ...]
-languageCode = "en"
+languageCode = "zh-CN"
 # language name ["English", "简体中文", "Français", "Polski", ...]
 # 语言名称 ["English", "简体中文", "Français", "Polski", ...]
-languageName = "English"
+languageName = "简体中文"
 # whether to include Chinese/Japanese/Korean
 # 是否包括中日韩文字
 hasCJKLanguage = false
@@ -33,7 +33,7 @@ copyright = ""
 enableRobotsTXT = true
 # whether to use git commit log
 # 是否使用 git 信息
-enableGitInfo = false
+enableGitInfo = true
 # whether to use emoji code
 # 是否使用 emoji 代码
 enableEmoji = true
@@ -161,10 +161,10 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
     author = true
     # site creation time
     # 网站创立年份
-    since = 2025
+    since = 2019
     # ICP info only in China (HTML format is supported)
     # ICP 备案信息，仅在中国使用 (支持 HTML 格式)
-    icp = "种树的时间"
+    icp = ""
     # license info (HTML format is supported)
     # 许可协议信息 (支持 HTML 格式)
     license= '<a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a>'
@@ -217,13 +217,20 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
     # Windows v8-11 磁贴颜色
     tileColor = "#da532c"
 
+  # Security config
+  # 安全配置
+  [params.security]
+    # Content-Security-Policy meta tag for when HTTP headers cannot be set
+    # https://content-security-policy.com/examples/meta/
+    # contentSecurityPolicy = "default-src 'self'"
+
   # Search config
   # 搜索配置
   [params.search]
     enable = true
-    # type of search engine ["lunr", "algolia"]
-    # 搜索引擎的类型 ["lunr", "algolia"]
-    type = "algolia"
+    # type of search engine ["lunr", "algolia", "fuse", "pagefind"]
+    # 搜索引擎的类型 ["lunr", "algolia", "fuse", "pagefind"]
+    type = "fuse"
     # max index length of the chunked content
     # 文章内容最长索引长度
     contentLength = 4000
@@ -246,6 +253,19 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       index = ""
       appID = ""
       searchKey = ""
+    [params.search.fuse]
+      # https://fusejs.io/api/options.html
+      isCaseSensitive = false
+      minMatchCharLength = 2
+      findAllMatches = false
+      location = 0
+      threshold = 0.3
+      distance = 100
+      ignoreLocation = false
+    [params.search.pagefind]
+      # Pagefind base path (run "npx pagefind --site public" after hugo build)
+      # Pagefind 基础路径 (在 hugo 构建后运行 "npx pagefind --site public")
+      basePath = "/_pagefind/"
 
   # Home page config
   # 主页信息设置
@@ -366,6 +386,9 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
     Codeberg = ""
     HuggingFace = ""
     Threads = ""
+    LeetCode = ""
+    LeetCodeCN = ""
+    Bluesky = ""
     Email = ""
     RSS = ""
 
@@ -472,7 +495,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       X = true
       Threads = true
       Facebook = true
-      Linkedin = false
+      Linkedin = true
       Whatsapp = false
       Pinterest = false
       Tumblr = false
@@ -629,7 +652,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       # Publisher info
       # 出版者信息
       [params.page.seo.publisher]
-        name = "种树者"
+        name = "xxxx"
         logoUrl = "/images/avatar.png"
 
   # TypeIt config
@@ -688,6 +711,9 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
     # Yandex Metrica
     [params.analytics.yandexMetrica]
       id = ""
+    [params.analytics.goatCounter]
+      code = ""
+
 
   # Cookie consent config
   # Cookie 许可配置
@@ -813,8 +839,6 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
     languageName = "English"
     hasCJKLanguage = false
     copyright = "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License."
-    # 网站标题
-    title = "Time to plan a tree"
     [languages.en.menu]
       [[languages.en.menu.main]]
         weight = 1
@@ -856,10 +880,15 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
         name = "About"
         url = "/about/"
         title = ""
-
+      [[languages.en.menu.main]]
+        weight = 6
+        identifier = "github"
+        pre = "<i class='fab fa-github' aria-hidden='true'></i>"
+        post = ""
+        name = ""
+        url = "https://github.com/dillonzq/LoveIt"
+        title = "GitHub"
     [languages.en.params]
-      [languages.en.params.header.title]
-        name = "Time to plant a tree"
       [languages.en.params.search]
         enable = true
         type = "algolia"
@@ -880,22 +909,27 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
           gravatarEmail = ""
           avatarURL = "/images/avatar.png"
           title = ""
-          subtitle = "The best time to plant a tree is 10 years ago, the second best is now"
+          subtitle = "A Clean, Elegant but Advanced Hugo Theme"
           typeit = true
           social = true
           disclaimer = ""
       [languages.en.params.social]
-        GitHub = ""
-        X = ""
-        Instagram = ""
-        Facebook = ""
-        Telegram = ""
-        Youtubelegacy = ""
-        HuggingFace = ""
-        Threads = ""
-        Phone = ""
-        Email = "plantatree2023@gmail.com"
+        GitHub = "xxxx"
+        X = "xxxx"
+        Linkedin = "xxxx"
+        Instagram = "xxxx"
+        Facebook = "xxxx"
+        Telegram = "xxxx"
+        Youtubelegacy = "xxxx"
+        HuggingFace = "xxxx"
+        LeetCode = "xxxx"
+        Threads = "xxxx"
+        Phone = "555-555-555"
+        Email = "xxxx@xxxx.com"
         RSS = true
+        [languages.en.params.social.Mastodon]
+          id = "@xxxx"
+          prefix = "https://mastodon.technology/"
 
   [languages.zh-cn]
     weight = 2
@@ -946,7 +980,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       [[languages.zh-cn.menu.main]]
         weight = 6
         identifier = "github"
-        pre = "<i class='fab fa-github fa-fw' aria-hidden='true'></i>"
+        pre = "<i class='fab fa-github' aria-hidden='true'></i>"
         post = ""
         name = ""
         url = "https://github.com/dillonzq/LoveIt"
@@ -972,21 +1006,19 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
           gravatarEmail = ""
           avatarURL = "/images/avatar.png"
           title = ""
-          subtitle = "种一棵树最好的时间是十年前，第二好的时间是现在"
+          subtitle = "一个简洁、优雅且高效的 Hugo 主题"
           typeit = true
           social = true
           disclaimer = ""
       [languages.zh-cn.params.social]
-        GitHub = ""
-        Weibo = ""
-        Steam = ""
-        Zhihu = ""
-        Douban = ""
-        Devto = ""
-        Bilibili = ""
-        Email = "plantatree2023@gmail.com"
-        Phone = ""
+        GitHub = "xxxx"
+        Weibo = "xxxx"
+        Steam = "xxxx"
+        Zhihu = "xxxx"
+        Douban = "xxxx"
+        Devto = "xxxx"
+        Bilibili = "xxxx"
+        LeetCodeCN = "xxxx"
+        Email = "xxxx@xxxx.com"
+        Phone = "555-555-555"
         RSS = true
-[caches]
-  [caches.images]
-    dir = ':cacheDir/images'
