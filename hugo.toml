@@ -2,7 +2,7 @@ baseURL = "https://example.com"
 
 # theme
 # 主题
-theme = "LoveIt"
+theme = 'loveit'
 # themes directory
 # 主题目录
 themesDir = "themes/"
@@ -990,4 +990,3 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
 [caches]
   [caches.images]
     dir = ':cacheDir/images'
-theme = 'loveit'
