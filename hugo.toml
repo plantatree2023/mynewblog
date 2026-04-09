@@ -990,4 +990,4 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
 [caches]
   [caches.images]
     dir = ':cacheDir/images'
-theme = 'LoveIt'
+theme = 'loveit'
