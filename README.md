@@ -17,6 +17,15 @@ git push origin main
 git rm --cached <your-file>
 ```
 
-[页面链接](https://plantatree2023.github.io/mynewblog)
 
-https://plantatree2023.github.io/mynewblog
+## 有用的链接
+[本页面链接](https://plantatree2023.github.io/mynewblog): https://plantatree2023.github.io/mynewblog
+
+使用的主题: LoveIt
+
+仓库地址: [https://github.com/dillonzq/LoveIt](https://github.com/dillonzq/LoveIt)
+
+我照抄的网站: [https://github.com/dillonzq/LoveIt/tree/master/exampleSite](https://github.com/dillonzq/LoveIt/tree/master/exampleSite)
+
+
+
