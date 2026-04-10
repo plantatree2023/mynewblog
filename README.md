@@ -4,6 +4,8 @@
 
 ```shell
 hugo server
+
+hugo # After you add a resource e.g. image, run this.
 ```
 
 Git操作
