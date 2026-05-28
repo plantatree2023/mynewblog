@@ -43,7 +43,7 @@ protoc --go_out=. --go_opt=paths=source_relative \
     api/stream.proto
 ````
 
-然后我门用Go语言实现该服务。该服务按顺序从输入流中轮询发送过来的数据。当他发现有数据发送过来的时候，间隔5秒发送一个ACK响应，一共发三个。
+然后我们用Go语言实现该服务。该服务按顺序从输入流中轮询发送过来的数据。当他发现有数据发送过来的时候，间隔5秒发送一个ACK响应，一共发三个。
 
 
 {{< highlight go >}}
@@ -352,7 +352,7 @@ DOCKER_API_VERSION=1.40 docker run --rm -it \
 'grpc-accept-encoding', 'gzip'
 ```
 
-在Header流过Wasm filter之后，我门看到Envoy正在试图做routing决定。然后我门看到Envoy创建了一个连接到upstream。然后又给这个连接创建了一个stream。
+在Header流过Wasm filter之后，我们看到Envoy正在试图做routing决定。然后我们看到Envoy创建了一个连接到upstream。然后又给这个连接创建了一个stream。
 
 ```text
 [2026-04-21 01:13:58.677][27][debug][router] [source/common/router/router.cc:515] [Tags: "ConnectionId":"0","StreamId":"8538165979598051927"] cluster 'grpc_backend' match for URL '/api.StreamService/BiStream'
