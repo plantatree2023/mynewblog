@@ -1,5 +1,4 @@
 ---
-weight: 3
 title: "主题文档 - 内置 Shortcodes"
 date: 2020-03-04T16:29:59+08:00
 lastmod: 2020-03-04T16:29:59+08:00
