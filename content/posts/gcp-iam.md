@@ -39,7 +39,7 @@ P4SA是什么？
 {{< /admonition >}}
 
 {{< admonition info >}}
-P4SA 全称为 Project-Programmatic-Pervasive-Per-Service-Account，通常在 GCP 中被称为 Service Agent（服务代理）。
+P4SA 全称为 Per-Product, Per-Project Service-Account，通常在 GCP 中被称为 Service Agent（服务代理）。
 
 1. 当你第一次使用某些特定的 GCP 服务（如BigQuery）时，Google 会在后台自动为你创建这些 Service Agents。
 
@@ -102,7 +102,7 @@ GCP产品中有一个项目管理该产品下面的所有P4SA account。所有�
 
 {{< admonition info >}}
 ```bash
-gcloud iam [service-accounts|projects|resource-manager folder|organizations] add-iam-policy-binding \
+gcloud iam [service-accounts|projects|resource-manager folders|organizations] add-iam-policy-binding \
     [RESOURCE] \
     --member="[PRINCIPAL]" \
     --role="[ROLE]"
@@ -133,7 +133,7 @@ GCP IAM里面的Resource是什么?可以是什么类型的主体？
 {{< /admonition >}}
 
 {{< admonition info >}}
-Resource是指被操作的对象。也就是你在 GCP 里面创建的各种云服务实体。可以是Originization：公司/域名。Folder：文件夹，比如Production文件夹，Staging文件夹。Project：项目。Service-specific resource。比如BigQuery的dataset和table。
+Resource是指被操作的对象。也就是你在 GCP 里面创建的各种云服务实体。可以是Organization：公司/域名。Folder：文件夹，比如Production文件夹，Staging文件夹。Project：项目。Service-specific resource。比如BigQuery的dataset和table。
 {{< /admonition >}}
 
 
@@ -210,15 +210,28 @@ Resource可以是一个service account吗？
 gcloud iam service-accounts add-iam-policy-binding \
     my-new-sa@YOUR_PROJECT_ID.iam.gserviceaccount.com \
     --member="user:your-email@company.com" \
-    --role="roles/iam.serviceAccountTokenAdmin"
+    --role="roles/iam.serviceAccountAdmin"
 ```
 {{< /admonition >}}
 
 
 {{< admonition question >}}
+什么是冒充（Impersonate）？Service Account A想要冒充Service Account B，谁是Principal谁是resource，谁应该给谁权限？
 {{< /admonition >}}
 
 {{< admonition info >}}
+Service Account A 想要冒充（impersonate/actAs）Service Account B，核心逻辑是：B 是资源，A 是主体。 也就是说，B 需要给 A 授权。
+
+具体来说，你需要在 Service Account B 的 IAM 策略中，将 Service Account Token Creator 角色授予 Service Account A。
+
+```bash
+gcloud iam service-accounts add-iam-policy-binding \
+    B@YOUR_PROJECT_ID.iam.gserviceaccount.com \
+    --member="serviceAccount:A@YOUR_PROJECT_ID.iam.gserviceaccount.com" \
+    --role="roles/iam.serviceAccountTokenCreator"
+```
+
+举一个例子就是Service Account A想要进Service Account B的房子，那需要B的进入自己房子的token。那么这个时候需要A被授予生成B token的role，然后A才能拿着B的token进入B的房子。
 {{< /admonition >}}
 
 
