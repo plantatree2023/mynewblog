@@ -9,7 +9,7 @@ description: "这篇文章展示了流式数据在Envoy中是怎样流动的"
 images: []
 
 tags: ["Envoy", "Streaming"]
-categories: ["Cloud Native"]
+categories: ["云原生"]
 
 lightgallery: true
 ---

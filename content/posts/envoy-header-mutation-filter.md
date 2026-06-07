@@ -9,7 +9,7 @@ description: "这篇文章展示了Envoy的Header Mutation Filter"
 images: []
 
 tags: ["Envoy", "Envoy Filter"]
-categories: ["Cloud Native"]
+categories: ["云原生"]
 
 lightgallery: true
 ---

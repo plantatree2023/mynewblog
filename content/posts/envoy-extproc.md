@@ -9,7 +9,7 @@ description: "这篇文章展示了Envoy中的ext_proc功能"
 images: []
 
 tags: ["Envoy"]
-categories: ["Cloud Native"]
+categories: ["云原生"]
 
 lightgallery: true
 ---

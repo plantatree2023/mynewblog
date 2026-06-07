@@ -8,7 +8,7 @@ description: "这篇文章是一篇关于GCP IAM的问答"
 images: []
 
 tags: ["GCP", "Auth"]
-categories: ["Cloud Computing"]
+categories: ["云计算"]
 
 lightgallery: true
 ---
@@ -339,23 +339,66 @@ Service Account User不允许Principal为Service Account创建短时凭证，也
 {{< /admonition >}}
 
 {{< admonition question >}}
+Bob执行了下面的命令。下面的Principal，Resource，Role是什么？
+
+```bash
+gcloud storage buckets add-iam-policy-binding gs://my-bucket \
+  --member="user:alice@example.com" \
+  --role="roles/storage.objectViewer"
+ ```
 {{< /admonition >}}
 
 {{< admonition info >}}
-{{< /admonition >}}{{< admonition question >}}
+Bob = 发起修改 IAM policy 请求的人
+
+Alice = 被授予权限的 principal
+
+my-bucket = 被绑定 IAM policy 的 resource
+
+roles/storage.objectViewer = 授予 Alice 的 role
+
+Bob 要成功执行这条命令，需要 Bob 自己对 my-bucket 有修改 IAM policy 的权限，比如类似`storage.buckets.setIamPolicy`。
+{{< /admonition >}}
+
+{{< admonition question >}}
+用户创建的Serivce Account的Key是短期的还是长期的？
 {{< /admonition >}}
 
 {{< admonition info >}}
-{{< /admonition >}}{{< admonition question >}}
+长期的。通常指用户下载下来的JSON key。里面包含了Service Account的私钥。默认情况下，这种 key不会自动过期，除非用户手动删除、轮换，或者组织策略强制限制 key 的有效期。Google官方也说明，Service ccount key 默认不失效，并且现在可以用 Organization Policy 给新 key 设置过期限制。
+{{< /admonition >}}
+
+{{< admonition question >}}
+用户冒充Service Account得到的Access Token是短期的还是长期的？
 {{< /admonition >}}
 
 {{< admonition info >}}
-{{< /admonition >}}{{< admonition question >}}
+短期的，不包含私钥。比如`print-access-token`打印出来的OAuth 2.0 access token的有效期是1小时，过期需要重新生成。
+{{< /admonition >}}
+
+{{< admonition question >}}
+Role分哪些种类？
 {{< /admonition >}}
 
 {{< admonition info >}}
-{{< /admonition >}}{{< admonition question >}}
+Basic：比如Viewer，Editor，Owner。
+
+Predefined：比如Service Account Token Creator。
+
+Custom：自己创建的role，可以自行添加predefined的权限。
+{{< /admonition >}}
+
+{{< admonition question >}}
 {{< /admonition >}}
 
 {{< admonition info >}}
 {{< /admonition >}}
+
+
+Topics：
+IAM Policy Troubleshooter
+IAM Policy Analyzer
+Deny Policy
+Org Policy
+Workload Identity Federation
+IAM Conditions 的 CEL 表达式
