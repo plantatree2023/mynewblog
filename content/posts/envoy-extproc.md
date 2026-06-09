@@ -652,4 +652,73 @@ x-nf-request-id: 01KQE05CFGRY7NKP97A63Y3Q0K
 x-envoy-upstream-service-time: 110
 
 ```
+
+请注意，该ExtensionWithMatcher filter不仅可以根据用户原始的请求中的header跳过，也可以根据filter chain中自己通过filter添加的header跳过。我们可以通过在ExtensionWithMatcher前面添加一个HeaderMutation filter来验证。
+
+添加下面的HeaderMutation filter。
+
 ```
+- name: envoy.filters.http.header_mutation
+  typed_config:
+    "@type": type.googleapis.com/envoy.extensions.filters.http.header_mutation.v3.HeaderMutation
+    mutations:
+      request_mutations:
+        - append:
+            header:
+              key: "x-run-ext"
+              value: "false"
+            append_action: OVERWRITE_IF_EXISTS_OR_ADD
+```
+
+然后我们发现无论用户的请求里包不包含`x-run-ext`，包含什么样的值，ext_proc filiter都不会被调用。
+```bash
+zheyu@ZhedeAir envoyext_proc % curl -I http://localhost:8082                      
+HTTP/1.1 200 OK
+accept-ranges: bytes
+age: 191
+cache-control: public,max-age=0,must-revalidate
+cache-status: "Netlify Edge"; hit
+content-length: 15991
+content-security-policy: frame-ancestors 'self';
+content-type: text/html; charset=UTF-8
+date: Tue, 09 Jun 2026 23:08:58 GMT
+etag: "ff32dfec01507fec23c1770a94cdba4b-ssl"
+server: envoy
+strict-transport-security: max-age=31536000
+x-nf-request-id: 01KTQAAWB5MVHM8CBA3Z0Y07BA
+x-envoy-upstream-service-time: 106
+
+zheyu@ZhedeAir envoyext_proc % curl -I http://localhost:8082 -H "x-run-ext: true"
+HTTP/1.1 200 OK
+accept-ranges: bytes
+age: 196
+cache-control: public,max-age=0,must-revalidate
+cache-status: "Netlify Edge"; hit
+content-length: 15991
+content-security-policy: frame-ancestors 'self';
+content-type: text/html; charset=UTF-8
+date: Tue, 09 Jun 2026 23:09:03 GMT
+etag: "ff32dfec01507fec23c1770a94cdba4b-ssl"
+server: envoy
+strict-transport-security: max-age=31536000
+x-nf-request-id: 01KTQAB0Z50KY4P34FP6NQ88PG
+x-envoy-upstream-service-time: 107
+
+zheyu@ZhedeAir envoyext_proc % curl -I http://localhost:8082 -H "x-run-ext: false"
+HTTP/1.1 200 OK
+accept-ranges: bytes
+age: 200
+cache-control: public,max-age=0,must-revalidate
+cache-status: "Netlify Edge"; hit
+content-length: 15991
+content-security-policy: frame-ancestors 'self';
+content-type: text/html; charset=UTF-8
+date: Tue, 09 Jun 2026 23:09:07 GMT
+etag: "ff32dfec01507fec23c1770a94cdba4b-ssl"
+server: envoy
+strict-transport-security: max-age=31536000
+x-nf-request-id: 01KTQAB4QN7KNYQKNAEWTAK2JE
+x-envoy-upstream-service-time: 107
+```
+
+另外，值得注意的一点是，ExtensionWithMatcher包裹的底层filter被跳过与否是一次性决定的，即如果他在request path被跳过那他在response path也会被跳过。在上面的例子中我们的ext_proc filter只在response path被trigger，但是我们的HeaderMutation filter是只在在request path被trigger的。这说明在request path被跳过的filter在response path也被跳过了。

@@ -15,6 +15,9 @@ git add .
 git commit -m "Commit message"
 git push origin main
 
+# Pull latest updates from remote
+git pull origin main
+
 # Remove a file accidentally checked in
 git rm --cached <your-file>
 ```
