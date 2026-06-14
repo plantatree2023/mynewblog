@@ -355,6 +355,21 @@ zheyu@ZhedeMacBook-Air ~ % curl -X POST \
 }
 ```
 
-另外我们发现，该发现（finding）会出现在Project A的Model Armor monitoring页面和Log Explorer中。Principal显示为caller的email。
+另外我们发现，该发现（finding）会出现在Project A的Model Armor monitoring页面和Log Explorer中。Principal显示为caller的email。另外，这些Model Armor请求会占用Project A的配额。如下图。
+{{< image src="/images/quota.png" caption="Project A的配额页面" >}}
+
+>  使用Model Armor，唯一占用的配额为modelarmor.googleapis.com的api-requests配额。另外，Model Armor一共只有两个配额，另外一个是使用ExternalProcessor会用到的配额modelarmor.googleapis.com/ExternalProcessorQuotaTokens。这两个配额的默认值均为1200个请求每分钟。
+
+> Model Armor除了这些配额外还有一些限制，详情请看[GCP官方文档](https://docs.cloud.google.com/model-armor/quotas#quotas)。
 
 同样的发现不会显示在Project B的相同页面中。不出现在Project B或许是可以理解的，因为系统即使有caller是Project B的owner的知识也不应该把这个请求归为Project B相关，因为在发出这个请求的时候请求本身没有任何Project B的信息。
+
+上面的观察显然说明Model Armor是基于resource计费的的服务。如果没有特殊配制，请求产生的配额消耗将记在拥有该resource的项目中。在Model Armor的例子中，resource为使用的模板。
+
+在一些GCP服务中，部分API允许调用者在HTTP请求头中显式携带`X-Goog-User-Project: <Project B>`。如果使用了这个Header，且Caller在Project B中拥有消费服务的使用权限，账单和配额就可以转移到 Caller 自己的项目上。经实验，Model Armor并未实现此功能。
+
+因此，尽管消耗Project A的配额是预期行为，但是在授权使用template的时候，授权者应该防止配额被滥用：
+
+1. 要牢记授权即信任。当你把操作自己资源的钥匙交给别人时，云平台会默认你愿意承担他们使用该资源所产生的成本。
+2. 为防滥用配额，可以设置配额上限和告警
+3. 不要将权限授予宽泛的Group或者Domain，只授予严格审查的Service Account。
