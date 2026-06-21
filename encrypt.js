@@ -37,7 +37,7 @@ async function walkAndEncrypt(dir) {
             const content = fs.readFileSync(filePath, 'utf8');
             
             // 当内容中出现标志字符串时，加密内容
-            if (content.includes('encrypt-content')) {
+            if (content.includes('encrypted-content')) {
                 console.log(`🔒 正在加密页面: ${filePath}`);
                 
                 try {

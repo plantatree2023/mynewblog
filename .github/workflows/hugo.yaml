@@ -82,8 +82,6 @@ jobs:
         env:
           ARTICLE_PASSWORD: ${{ secrets.ARTICLE_PASSWORD }}
         run: |
-          export ARTICLE_PASSWORD="${{ secrets.ARTICLE_PASSWORD }}"
-
           hugo build \
             --gc \
             --minify \
