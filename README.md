@@ -3,6 +3,7 @@
 开启一个Hugo示例服务器
 
 ```shell
+npm run build # If you added new encrypted post
 hugo server
 
 hugo # After you add a resource e.g. image, run this.
