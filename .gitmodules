@@ -1,3 +1,6 @@
 [submodule "themes/loveit"]
 	path = themes/loveit
 	url = https://github.com/dillonzq/LoveIt.git
+[submodule "content/posts/private"]
+	path = content/posts/private
+	url = https://github.com/plantatree2023/privateblogs.git

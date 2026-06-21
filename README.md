@@ -20,6 +20,10 @@ git pull origin main
 
 # Remove a file accidentally checked in
 git rm --cached <your-file>
+
+# Sync latest changes in submodules
+# Run this from the main repo
+git submodule update --remote --merge
 ```
 
 
