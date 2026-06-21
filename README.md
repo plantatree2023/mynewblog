@@ -26,6 +26,27 @@ git rm --cached <your-file>
 git submodule update --remote --merge
 ```
 
+```
+# 1. 进入子模块目录
+cd content/posts/private
+
+# 2. 确保你在正确的分支上（非常重要！）
+git checkout main
+
+# 3. 添加并提交你的博客
+git add .
+git commit -m "Add a new private post"
+
+# 4. 推送到子模块的远程仓库
+git push origin main
+
+# 5. 回到主项目根目录，同步主项目的指针
+cd ../../../
+git add content/posts/private
+git commit -m "Sync submodule pointer"
+git push
+```
+
 
 ## 有用的链接
 [本页面链接](https://plantatree2023.github.io/mynewblog): https://plantatree2023.github.io/mynewblog
