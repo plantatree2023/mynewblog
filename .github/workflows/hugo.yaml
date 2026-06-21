@@ -82,12 +82,13 @@ jobs:
         env:
           ARTICLE_PASSWORD: ${{ secrets.ARTICLE_PASSWORD }}
         run: |
+          export ARTICLE_PASSWORD="${{ secrets.ARTICLE_PASSWORD }}"
+
           hugo build \
             --gc \
             --minify \
             --baseURL "${{ steps.pages.outputs.base_url }}/" \
-            --cacheDir "${{ runner.temp }}/hugo_cache"
-          node encrypt.js
+            --cacheDir "${{ runner.temp }}/hugo_cache" && node encrypt.js
       - name: Cache save
         id: cache-save
         uses: actions/cache/save@v5

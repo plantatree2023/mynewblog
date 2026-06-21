@@ -87,11 +87,11 @@
         {{- end -}}
         {{ if .Params.private }}
             <div>encrypt-content</div>
+        {{ end }}
         {{- /* Content */ -}}
         <div class="content" id="content">
             {{- dict "Content" .Content "Ruby" $params.ruby "Fraction" $params.fraction "Fontawesome" $params.fontawesome | partial "function/content.html" | safeHTML -}}
         </div>
-        {{ end }}
         {{- /* Footer */ -}}
         {{- partial "single/footer.html" . -}}
 

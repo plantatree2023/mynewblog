@@ -8,6 +8,12 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC_DIR = path.join(__dirname, 'public');
 const PASSWORD = process.env.ARTICLE_PASSWORD;
 
+if (!PASSWORD || PASSWORD.trim() === '' || PASSWORD === 'undefined') {
+    console.error('❌ 严重错误：未能获取到有效的 ARTICLE_PASSWORD 环境变量！');
+    console.error('为了防止私密文章以“空密码”形式裸奔泄漏，deploy已强制拦截退出。');
+    process.exit(1);
+}
+
 console.log('📦 当前 pagecrypt 模块导出的所有内容：', Object.keys(pagecrypt));
 
 // 动态寻找加密函数（兼容新旧版本命名）
