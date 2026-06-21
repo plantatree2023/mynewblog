@@ -22,6 +22,9 @@ git pull origin main
 # Remove a file accidentally checked in
 git rm --cached <your-file>
 
+# Initialize all submodules when pulling changes in a new local repo
+git submodule update --init --recursive
+
 # Sync latest changes in submodules
 # Run this from the main repo
 git submodule update --remote --merge
