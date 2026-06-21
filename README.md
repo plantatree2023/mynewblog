@@ -26,6 +26,7 @@ git rm --cached <your-file>
 git submodule update --remote --merge
 ```
 
+本仓库包含了一个私密博客的目录，下面是如何修改私密博客并同步到主项目的方法。
 ```shell
 # 1. 进入子模块目录
 cd content/posts/private
