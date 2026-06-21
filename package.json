@@ -1,0 +1,25 @@
+{
+  "name": "mynewblog",
+  "version": "1.0.0",
+  "description": "开启一个Hugo示例服务器",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "hugo --gc --minify && node encrypt.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plantatree2023/mynewblog.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/plantatree2023/mynewblog/issues"
+  },
+  "homepage": "https://github.com/plantatree2023/mynewblog#readme",
+  "devDependencies": {
+    "pagecrypt": "^7.1.0"
+  }
+}
