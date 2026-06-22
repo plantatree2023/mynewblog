@@ -657,7 +657,7 @@ x-envoy-upstream-service-time: 110
 
 添加下面的HeaderMutation filter。
 
-```
+```yaml
 - name: envoy.filters.http.header_mutation
   typed_config:
     "@type": type.googleapis.com/envoy.extensions.filters.http.header_mutation.v3.HeaderMutation

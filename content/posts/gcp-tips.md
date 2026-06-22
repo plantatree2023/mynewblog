@@ -22,7 +22,7 @@ gcloud auth print-access-token 打印的是当前 gcloud CLI 正在使用的“�
 
 比如使用`gcloud auth list`，你会看到：
 
-```
+```bash
 ACCOUNT
 user1@gmail.com  (active)
 user2@gmail.com

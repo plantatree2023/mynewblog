@@ -196,7 +196,7 @@ zheyu@ZhedeAir ~ % curl -X POST \
 ```
 
 我们在Project A的Log Explorer里面看到了如下的Audit log（需先IAM > Audit Logs开启Model Armor API的数据平面Audit Log）。
-```
+```json
 {
   "protoPayload": {
     "@type": "type.googleapis.com/google.cloud.audit.AuditLog",
