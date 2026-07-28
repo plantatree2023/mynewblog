@@ -14,35 +14,40 @@ lightgallery: true
 math:
   enable: true
 ---
+本文章为小蓝本初中篇因式分解教程笔记。
 
 ### 常用公式
 
 \begin{equation*}
-a^2 - b^2 = (a + b)(a-b)
+a^2 - b^2 = (a + b)(a-b)，平方差
 \end{equation*}
 
 \begin{equation*}
-a^3 + b^3 = (a + b)(a^2-ab+b^2)
+a^3 + b^3 = (a + b)(a^2-ab+b^2)，立方和
 \end{equation*}
 
 \begin{equation*}
-a^3 + b^3 = (a - b)(a^2+ab+b^2)
+a^3 - b^3 = (a - b)(a^2+ab+b^2)，立方差
 \end{equation*}
 
 \begin{equation*}
-a^2+2ab+b^2=(a+b)^2
+a^2+2ab+b^2=(a+b)^2，完全平方
 \end{equation*}
 
 \begin{equation*}
-a^2-2ab+b^2=(a-b)^2
+a^2-2ab+b^2=(a-b)^2，完全平方
 \end{equation*}
 
 \begin{equation*}
-a^3+3a^2b+3ab^2+b^3=(a+b)^3
+a^2+b^2+c^2+2ab+2bc+2ac=(a+b+c)^2，完全平方
 \end{equation*}
 
 \begin{equation*}
-a^3-3a^2b+3ab^2-b^3=(a-b)^3
+a^3+3a^2b+3ab^2+b^3=(a+b)^3，完全立方
+\end{equation*}
+
+\begin{equation*}
+a^3-3a^2b+3ab^2-b^3=(a-b)^3，完全立方
 \end{equation*}
 
 \begin{equation*}
@@ -260,9 +265,11 @@ $$x=\frac{-1\pm\sqrt{3}i}{2}$$
 
 **解**： $\omega$ 是多项式 $x^4 + 1 + (x + 1)^4$ 的根。事实上，利用上式，可得\begin{align*} 
 &\omega^4 + 1 + (\omega + 1)^4 \\\\
+ = &\omega + 1 + (-\omega^2)^4 \\\\
  = &\omega + 1 + (\omega^2)^4 \\\\
-  = &\omega + 1 + \omega^2 \\\\
-   = &0, 
+ = &\omega + 1 + \omega^8 \\\\
+ = &\omega + 1 + \omega^2 \\\\
+= &0, 
 \end{align*}
 因此，$x^2 + x + 1$ 是 $x^4 + 1 + (x + 1)^4$ 的因式，$x^2 + xy + y^2$ 是 $x^4 + y^4 + (x + y)^4$ 的因式（这个判断对解决这个问题十分重要的。
 
@@ -323,3 +330,33 @@ $$x^2, x^2+x, x^2+1, x^2+x+1$$
 #### 分圆多项式
 
 分圆多项式在有理数集内是不可约的。例如：多项式 $x^4 + 1 = \frac{x^8 - 1}{x^4 - 1}$，它的根是 8 次本质单位根；例 3 中的 $x^6 + x^3 + 1 = \frac{x^9 - 1}{x^3 - 1}$，它的根是 9 次本质单位根；例 2 中的 $x^4 + x^3 + x^2 + x + 1 = \frac{x^5 - 1}{x - 1}$，它的根是 5 次本质单位根。这些多项式都是分圆多项式，在有理数集内都是不可约的。
+
+
+### 勘误
+
+#### 第十一章
+
+第十一章习题5答案错误。
+
+**习题5**：$x^2+xy+y^2$是不是$x^7+y^7+(x+y)^7$的一个因式？
+
+**解**：答案给的是。
+
+两种方案验证不是。一是将$x=\omega$代入上式的等价式$x^7+1+(x+1)^7$，得
+
+\begin{align*}
+&\omega^7+1+(\omega+1)^7 \\\\
+&=\omega+1+(-\omega^2)^7 \\\\
+&=\omega+1-\omega^{14} \\\\
+&=\omega+1+\omega \\\\
+&\neq 0
+\end{align*}
+
+另，
+
+\begin{align*}
+&x^7+y^7+(x+y)^7 \\\\
+&=(x+y)[(x^2+xy+y^2)(2x^4+3x^3y+11x^2y^2+5xy^3)+2y^6]
+\end{align*}
+
+不能化成有$(x^2+xy+y^2)$因式的形式。
