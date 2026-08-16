@@ -5,7 +5,6 @@ lastmod: 2026-07-27T21:57:40+08:00
 draft: false
 author: "种树者"
 description: "这篇文章记录了一些因数分解技巧及其提示"
-images: []
 
 tags: ["数学"]
 categories: ["数学"]
