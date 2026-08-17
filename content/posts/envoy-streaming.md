@@ -324,7 +324,7 @@ DOCKER_API_VERSION=1.40 docker run --rm -it \
 当我们使用如下命令建立连接，但是不发送数据的时候，我们看到客户端发送了Header建立了连接。
 
 
-```text
+```bash
 [2026-04-10 22:02:39.622][30][info][wasm] [source/extensions/common/wasm/context.cc:1195] wasm log my_filter_1 my_vm_1: [filter.cc:10]::onRequestHeaders() C++ Filter >>> Request Headers received
 [2026-04-10 22:02:39.622][30][info][wasm] [source/extensions/common/wasm/context.cc:1195] wasm log my_filter_2 my_vm_1: [filter.cc:10]::onRequestHeaders() C++ Filter >>> Request Headers received
 [2026-04-10 22:02:39.622][30][info][wasm] [source/extensions/common/wasm/context.cc:1195] wasm log my_filter_3 my_vm_1: [filter.cc:10]::onRequestHeaders() C++ Filter >>> Request Headers received
@@ -337,7 +337,7 @@ DOCKER_API_VERSION=1.40 docker run --rm -it \
 
 ```
 
-```text
+```bash
 [2026-04-21 01:13:58.669][27][debug][conn_handler] [source/common/listener_manager/active_tcp_listener.cc:160] [Tags: "ConnectionId":"0"] new connection from 192.168.65.1:64799
 [2026-04-21 01:13:58.674][27][debug][http] [source/common/http/conn_manager_impl.cc:398] [Tags: "ConnectionId":"0"] new stream
 [2026-04-21 01:13:58.674][27][debug][http2] [source/common/http/http2/codec_impl.cc:1942] [Tags: "ConnectionId":"0"] Http2Visitor::OnEndHeadersForStream(1)
@@ -354,7 +354,7 @@ DOCKER_API_VERSION=1.40 docker run --rm -it \
 
 在Header流过Wasm filter之后，我们看到Envoy正在试图做routing决定。然后我们看到Envoy创建了一个连接到upstream。然后又给这个连接创建了一个stream。
 
-```text
+```bash
 [2026-04-21 01:13:58.677][27][debug][router] [source/common/router/router.cc:515] [Tags: "ConnectionId":"0","StreamId":"8538165979598051927"] cluster 'grpc_backend' match for URL '/api.StreamService/BiStream'
 [2026-04-21 01:13:58.677][27][debug][router] [source/common/router/router.cc:738] [Tags: "ConnectionId":"0","StreamId":"8538165979598051927"] router decoding headers:
 ':method', 'POST'
@@ -384,7 +384,7 @@ DOCKER_API_VERSION=1.40 docker run --rm -it \
 ```
 
 当我们开始发送数据`{"body": "hello}`，我们看到后端首先发回Header，然后发回三个响应体。注意请求和响应流过filter的顺序是正好相反的。
-```text
+```bash
 [2026-04-10 22:04:21.209][30][info][wasm] [source/extensions/common/wasm/context.cc:1195] wasm log my_filter_1 my_vm_1: [filter.cc:15]::onRequestBody() C++ Filter >>> Request Body (size: 16)
 [2026-04-10 22:04:21.210][30][info][wasm] [source/extensions/common/wasm/context.cc:1195] wasm log my_filter_2 my_vm_1: [filter.cc:15]::onRequestBody() C++ Filter >>> Request Body (size: 16)
 [2026-04-10 22:04:21.210][30][info][wasm] [source/extensions/common/wasm/context.cc:1195] wasm log my_filter_3 my_vm_1: [filter.cc:15]::onRequestBody() C++ Filter >>> Request Body (size: 16)
@@ -436,7 +436,7 @@ if p, ok := peer.FromContext(ctx); ok {
 grpcurl -plaintext -proto ./api/stream.proto -d @ localhost:8080 api.StreamService/BiStream
 ```
 
-```text
+```bash
 2026/04/10 15:31:36 [Stream Info] Metadata: map[:authority:[localhost:8080] content-type:[application/grpc] grpc-accept-encoding:[gzip] user-agent:[grpcurl/1.9.3 grpc-go/1.61.0] x-envoy-expected-rq-timeout-ms:[15000] x-forwarded-proto:[http] x-request-id:[36a02abb-89e2-455e-ac4e-2996519d489d]]
 2026/04/10 15:31:36 [Stream Info] Remote Addr: 127.0.0.1:59312
 2026/04/10 15:31:40 [Stream Info] Metadata: map[:authority:[localhost:8080] content-type:[application/grpc] grpc-accept-encoding:[gzip] user-agent:[grpcurl/1.9.3 grpc-go/1.61.0] x-envoy-expected-rq-timeout-ms:[15000] x-forwarded-proto:[http] x-request-id:[d0b8dbc1-7e3b-45e6-a5ce-08ec760427d9]]
@@ -445,7 +445,7 @@ grpcurl -plaintext -proto ./api/stream.proto -d @ localhost:8080 api.StreamServi
 
 下面我们尝试在连接建立后直接发送一个Header，不等第一个请求题到来。可以看到响应头直接返回，不需要第一个请求头。
 
-```text
+```bash
 [2026-04-10 22:40:11.520][30][info][wasm] [source/extensions/common/wasm/context.cc:1195] wasm log my_filter_1 my_vm_1: [filter.cc:10]::onRequestHeaders() C++ Filter >>> Request Headers received
 [2026-04-10 22:40:11.520][30][info][wasm] [source/extensions/common/wasm/context.cc:1195] wasm log my_filter_2 my_vm_1: [filter.cc:10]::onRequestHeaders() C++ Filter >>> Request Headers received
 [2026-04-10 22:40:11.520][30][info][wasm] [source/extensions/common/wasm/context.cc:1195] wasm log my_filter_3 my_vm_1: [filter.cc:10]::onRequestHeaders() C++ Filter >>> Request Headers received
@@ -468,7 +468,7 @@ zheyu@ZhedeAir envoystreaming % grpcurl -plaintext -proto ./api/stream.proto -d 
 }
 ```
 
-```text
+```bash
 [2026-04-10 23:17:37.601][31][info][wasm] [source/extensions/common/wasm/context.cc:1195] wasm log my_filter_1 my_vm_1: [filter.cc:10]::onRequestHeaders() C++ Filter >>> Request Headers received
 [2026-04-10 23:17:37.601][31][info][wasm] [source/extensions/common/wasm/context.cc:1195] wasm log my_filter_2 my_vm_1: [filter.cc:10]::onRequestHeaders() C++ Filter >>> Request Headers received
 [2026-04-10 23:17:37.601][31][info][wasm] [source/extensions/common/wasm/context.cc:1195] wasm log my_filter_3 my_vm_1: [filter.cc:10]::onRequestHeaders() C++ Filter >>> Request Headers received
