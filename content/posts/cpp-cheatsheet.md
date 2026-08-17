@@ -1,10 +1,10 @@
 ---
-title: "cpp小抄cheatsheet"
+title: "C++小抄cheatsheet"
 date: 2026-08-15T21:57:40+08:00
 lastmod: 2026-08-15T21:57:40+08:00
 draft: false
 author: "种树者"
-description: "这是一篇cpp cheatsheet小抄"
+description: "这是一篇C++ cheatsheet小抄"
 images: []
 
 tags: ["cpp","编程语言"]
@@ -67,7 +67,10 @@ char s[]="hello";       // 字符串（6个元素，包括'\0'）
 int* p;                 // p是一个整数的指针
 char* s="hello";        // s是一个未命名的，包含了"hello"的数组的指针
 void* p=NULL;           // untyped内存的地址
-int& r=x;               // r是整数x的引用
+int& r=x;               // r是整数x的(左值)引用
+T a; T& ref=a;          // ref 是 a 的(左值)引用
+ref.xxx;                // 实际调用 a.xxx
+
 enum weekend {SAT,SUN}; // weekend是有值SAT和SUN的枚举类型
 enum weekend day;       // day是weekend类型的变量
 enum weekend {SAT=0,SUN=1};             // 枚举类型显式表示为整数
@@ -239,10 +242,14 @@ public:                   // 所有人都可访问
   void h() const;         // 不修改任何数据成员
   int operator+(int y);   // t+y 表示 t.operator+(y)
   int operator-();        // -t 表示 t.operator-()
+  
   T(): x(1) {}            // 带初始化列表的构造函数
   T(const T& t): x(t.x) {}  // 拷贝构造函数
-  T& operator=(const T& t) {x=t.x; return *this; }  // 赋值运算符
+  T(T&& t): x(std::move(t.x)) {/*t.x=nullptr;*/}      // 移动构造函数（move）
+  T& operator=(const T& t) {x=t.x; return *this; }  // （拷贝）赋值运算符
+  T& operator=(T&& t) {x=std::move(t.x);return *this;}  // 移动赋值符（move）
   ~T();                   // 析构函数（自动清理）
+
   explicit T(int a);      // 允许 t=T(3)，但不允许 t=3，防止隐式类型转换
   operator int() const {return x;}  // 允许 int(t)
   friend void i();        // 友元函数，全局函数 i() 拥有私有访问权限，可以访问私有函数和变量
@@ -300,7 +307,63 @@ char ref[5] = {'R', 'e', 'f'};
 for (const int &n : ref) {}         // Range 遍历数组
 for (int i = 0; i < sizeof(ref); ++i) {}  // 传统遍历数组
 ```
+### 生命周期（owning）
+```cpp
+void foo() {int x = 10;}            // foo() 的 stack frame 拥有 x，不需delete x
+int x = 10;                         // x own 自己的生命周期
+int* p = &x;                        // p 不是 x 的owning pointer，p 被销毁时 x 仍然存在
+void foo() {int x = 10; int* p = &x;} // x 和 p 都会被销毁
+void foo() {
+  int* p = new int(10);             // 谁 delete p 谁就是 owner，这里 p 是owning pointer
+}                                   // p 这个指针消失，heap 上的 int(10) 还在，memory leak
 
+void foo() {
+    std::unique_ptr<int> p =         // p 明确拥有这个 object
+      std::make_unique<int>(10);     // std::unique_ptr 默认是一个 owning pointer
+    std::cout << *p << std::endl;
+}                                    // p 的 destructor 自动执行，delete int，释放 heap object
+
+auto p = std::make_shared<int>(10); // p own 这个 int
+auto q = p;                         // q 现在也 own 这个 int，p，q share ownership
+p.reset();                          // 还不能删这个 int，q reset 后才能删
+std::weak_ptr<int> w = p;           // w 观察（并不拥有）int(10), 即使 w 还存在，int(10) 也可以被释放
+std::cout << *w;                    // 非法
+if (auto p2 = w.lock()) {           // 尝试获得一个新shared_ptr p2
+    std::cout << *p2 << std::endl;  // int(10) 还活着
+} else {}                           // int(10) 已经被销毁
+
+std::unique_ptr<int> p =
+    std::make_unique<int>(10);      // p own int(10)
+foo(p);                             // 不允许，不能有两个owner
+std::unique_ptr<int> q =            // q own int(10)， ownership 转移
+    std::move(p);                   // p 变成 empty/有时为nullptr
+
+int x = 10; int y = std::move(x);   // x 和 y 都是 10，int 没有move constructor/move assignment
+
+int x = 10; int& r = x;             // r，reference 不拥有 x
+
+```
+
+### 复制（copy）
+```cpp
+int a = 10;                         // 创建一个新int
+int b = a;                          // copy 创建 b，并用 a 的值初始化它
+b = a;                              // 赋值
+```
+
+对类来说：
+```cpp
+class Person {
+public:
+    std::string name;
+};
+
+Person a; a.name = "Alice";         // default construction，调用 Person::Person()
+Person b = a;                       // copy construction，调用 Person::Person(const Person&)
+Person c; c = a;                    // copy assignment, 调用 operator=(const Person&)
+Person c = std::move(a);            // move construction, 调用 Person(Person&&)
+b = std::move(a);                   // move assignment，调用 operator=(Person&&)                                
+```
 ###  C/C++ 标准库（C/C++ STANDARD LIBRARY）
 此处仅列出了最常用的函数。不带 `.h` 后缀的头文件位于 `std` 命名空间中。文件名实际上均为小写。
 

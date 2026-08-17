@@ -1,10 +1,10 @@
 ---
-title: "cpp操作protobuf"
+title: "C++操作protobuf"
 date: 2026-08-16T21:57:40+08:00
 lastmod: 2026-08-16T21:57:40+08:00
 draft: false
 author: "种树者"
-description: "这是一篇讨论cpp操作protobuf的文章"
+description: "这是一篇讨论C++操作protobuf的文章"
 images: []
 
 tags: ["cpp","编程语言"]
