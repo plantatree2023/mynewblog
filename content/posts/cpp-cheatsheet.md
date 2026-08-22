@@ -19,7 +19,6 @@ lightgallery: true
 2. [C++ Quick reference by utkuufuk](https://github.com/utkuufuk/cpp-quick-reference)
 3. [C++ cheatsheet by Fechin](https://quickref.me/cpp.html)
 
-
 ### 预处理器（preprocessor）
 
 ```cpp
@@ -36,6 +35,7 @@ lightgallery: true
 #else                   // 可选项 （#ifndex X 或 #if !defined(X))
 #endif                  // 必须出现在#if和#ifdef后
 ```
+
 ### 字面量（literals）
 
 ```cpp
@@ -48,6 +48,7 @@ lightgallery: true
 "hello" "world"         // 组合的字符串
 true, false             // 布尔常量1和0
 ```
+
 ### 声明（declarations）
 
 ```cpp
@@ -81,9 +82,11 @@ const int* p=a;         // p的内容是常量
 int* const p=a;         // p是常量，p的内容不是
 const int* const p=a;   // p和p的内容都是常量
 const int& cr=x;        // cr是一个常量引用，不能被赋值去修改他所指向的变量x的值
+auto x = 10;            // 编译器推导类型
 ```
 
 ### 存储类 （storage class）
+
 ```cpp
 int x;                  // 自动分配，内存分配仅在处于当前scope的时候存在
 static int x;           // 全局声明周期，即使是在local scope中
@@ -167,6 +170,7 @@ f(x,y)                    // 调用函数 f，参数为 x 和 y
 T(x,y)                    // 用 x 和 y 初始化的类 T 对象
 x++                       // 对 x 加 1，返回原值（后缀）
 x--                       // 对 x 减 1，返回原值（后缀）
+decltype(x) y = 20;       // x 是 int 时：int y = 20
 typeid(x)                 // x 的类型
 typeid(T)                 // 如果 x 是 T，则等于 typeid(x)
 dynamic_cast<T>(x)        // 将 x 转换为 T，运行时检查
@@ -283,7 +287,9 @@ template <class T> X<T>::X(T t) {}  // 构造函数定义（实现）
 X<int> x(3);                        // 类型为 "X of int" 的对象
 template <class T, class U=T, int n=0>  // 带默认参数的模板
 ```
+
 ###  命名空间（namespace）
+
 ```cpp
 namespace N {class T {};} // 隐藏名称 T
 N::T t;                   // 使用命名空间 N 中的名称 T
@@ -307,7 +313,9 @@ char ref[5] = {'R', 'e', 'f'};
 for (const int &n : ref) {}         // Range 遍历数组
 for (int i = 0; i < sizeof(ref); ++i) {}  // 传统遍历数组
 ```
+
 ### 生命周期（owning）
+
 ```cpp
 void foo() {int x = 10;}            // foo() 的 stack frame 拥有 x，不需delete x
 int x = 10;                         // x own 自己的生命周期
@@ -364,10 +372,107 @@ Person c; c = a;                    // copy assignment, 调用 operator=(const P
 Person c = std::move(a);            // move construction, 调用 Person(Person&&)
 b = std::move(a);                   // move assignment，调用 operator=(Person&&)                                
 ```
-###  C/C++ 标准库（C/C++ STANDARD LIBRARY）
+
+### 编译期计算
+
+```cpp
+constexpr int square(int x) {       // constexpr 用在函数上，既可以编译期执行，也可以运行时执行
+    return x * x;
+}
+constexpr int x = square(10);       // constexpr 用在变量上，必须是编译期就能确定的值
+```
+
+```cpp
+consteval int square(int x) {       // consteval 用在函数上，必须编译期执行，不可以运行时执行
+    return x * x;
+}
+constexpr int a = square(10);       // 合法
+int b = square(x);                  // 不合法
+```
+
+```cpp
+constinit int x = 100;              // 变量的初始化必须发生在编译期/静态初始化阶段
+x = 200;                            // 变量可修改
+constexpr int x = 100;
+x = 200;                            // 变量不可修改
+```
+
+### 匿名函数（lambda）
+
+完整定义：
+
+```cpp
+[capture](parameters) mutable noexcept -> return_type {body}
+```
+
+* [capture] 捕获列表
+* [parameters] 参数
+* [mutable] 允许修改捕获的值的副本，不允许修改外面的变量
+* [noexcept] 不抛异常，如果函数抛出异常直接调用`std::terminate()`程序直接终止
+* [int] 返回类型
+
+常用定义：
+
+```cpp
+[capture](parameters) {body}
+```
+
+```cpp
+auto compare = [](int a, int b) {   // 一个匿名函数
+    return a > b;
+};
+bool x = compare(1, 2);             // 调用匿名函数
+std::sort(v.begin(), v.end(), compare); // 传入一个匿名函数
+```
+
+捕获
+
+```cpp
+int x = 10;
+auto f = [x]() {cout << x;};        // 捕获外部局部变量，[x] 捕获列表，() lambda没有参数
+x = 20;
+f();                                // 输出 10， [x] 按值捕获，进行了拷贝
+
+int x = 10;
+auto f = [&x]() {cout << x;};       // [&x] 按引用捕获
+x = 20;
+f();                                // 输出 20
+
+int x = 10;
+auto f = [x]() mutable {
+    x++;
+    std::cout << x;
+};
+f();                                // 输出 11
+std::cout << x;                     // 输出 10，修改的是自己保存的copy，不是外部 x
+
+auto f = [=]() {cout << x << y;};   // 全部按值捕获， [=] 相当于 [x, y]
+auto f = [&]() {x++; y++;};         // 全部按引用捕获
+auto f = [this]() {};               // 捕获this
+
+int threshold = 10;
+std::vector<int> v = {1, 5, 10, 15, 20};
+std::count_if(v.begin(), v.end(), [=](int x) {
+  return x > threshold;
+});
+
+std::sort(people.begin(), people.end(),
+  [](const Person& a, const Person& b) {
+      return a.age < b.age;
+  }
+);
+
+auto f = [](auto a, auto b) {       // 模板化
+  return a + b;                     // int： f(1, 2); double：f(1.5, 2.5)；
+};
+```
+
+### C/C++ 标准库（C/C++ STANDARD LIBRARY）
+
 此处仅列出了最常用的函数。不带 `.h` 后缀的头文件位于 `std` 命名空间中。文件名实际上均为小写。
 
 #### ARRAY（数组）
+
 ```cpp
 std::array<int, 3> marks;           // 声明数组
 marks[0] = 92;                      // 赋值数组元素
@@ -414,6 +519,7 @@ rename("old", "new");     // 重命名文件，成功返回 0
 f = tmpfile();            // 创建临时文件，模式为 "wb+"
 tmpnam(s);                // 将唯一文件名写入字符数组 s[L_tmpnam]
 ```
+
 #### STDLIB.H, CSTDLIB（杂项函数）
 
 ```cpp
@@ -426,8 +532,11 @@ system(s);                // 执行系统命令 s（依赖于系统）
 getenv("PATH");           // 返回环境变量值或 0（依赖于系统）
 abs(n); labs(ln);         // 返回 int、long 的绝对值
 ```
+
 #### STRING.H, CSTRING（字符数组处理函数）
+
 字符串的类型是 `char[]`（字符数组），且其使用的最后一个元素为 `'\0'`。
+
 ```cpp
 strcpy(dst, src);         // 复制字符串，不做边界检查
 strcat(dst, src);         // 将 src 追加到 dst，不做边界检查
@@ -443,14 +552,25 @@ memcmp(s1, s2, n);        // 按 strcmp 的方式比较 n 个字节
 memchr(s, c, n);          // 在 s 中查找第一个字节 c，返回地址或 0
 memset(s, c, n);          // 将 s 的前 n 个字节设置为 c
 ```
+
 #### CTYPE.H, CCTYPE（字符类型）
+
 ```cpp
 isalnum(c);               // c 是字母或数字吗？
 isalpha(c); isdigit(c);   // c 是字母吗？是数字？
 islower(c); isupper(c);   // c 是小写字母吗？是大写字母？
 tolower(c); toupper(c);   // 将 c 转换为小写/大写
 ```
+
+#### STRING_VIEW
+
+```cpp
+
+
+```
+
 #### MATH.H, CMATH（浮点数学）
+
 ```cpp
 sin(x); cos(x); tan(x);   // 三角函数，x（double）以弧度为单位
 asin(x); acos(x); atan(x);// 反三角函数
@@ -461,7 +581,9 @@ pow(x, y); sqrt(x);       // x 的 y 次方，平方根
 ceil(x); floor(x);        // 向上/向下取整（返回 double）
 fabs(x); fmod(x, y);      // 绝对值，x mod y
 ```
+
 #### TIME.H, CTIME（时钟）
+
 ```cpp
 clock()/CLOCKS_PER_SEC;   // 自程序启动以来的时间（秒）
 time_t t=time(0);         // 绝对时间（秒），未知时返回 -1
@@ -471,17 +593,23 @@ tm* p=gmtime(&t);         // 若 UTC 不可用返回 0，否则 p->tm_X 中的 X
 asctime(p);               // "Day Mon dd hh:mm:ss yyyy\n"
 asctime(localtime(&t));   // 同样的格式，本地时间
 ```
+
 #### ASSERT.H, CASSERT（调试辅助）
+
 ```cpp
 assert(e);                // 若 e 为 false，则打印消息并中止
 #define NDEBUG            // （在 #include <assert.h> 之前）关闭 assert
 ```
+
 #### NEW.H, NEW（内存出界 out of memory 处理器）
+
 ```cpp
 set_new_handler(handler); // 当内存不足时改变行为
 void handler(void) {throw bad_alloc();}  // 默认
 ```
+
 #### IOSTREAM.H, IOSTREAM（替代 stdio.h）
+
 ```cpp
 cin >> x >> y;              // 从标准输入读取 x 和 y（任意类型）
 cout << "x=" << 3 << endl;  // 写到标准输出
@@ -494,7 +622,9 @@ if (cin)                    // 状态正常（非 EOF）？
 istream& operator>>(istream& i, T& x) {i >> ...; x=...; return i;}
 ostream& operator<<(ostream& o, const T& x) {return o << ...;}
 ```
+
 #### FSTREAM.H, FSTREAM（文件 I/O，行为与 cin、cout 类似）
+
 ```cpp
 ifstream f1("filename");  // 以读取方式打开文本文件
 if (f1)                   // 检查是否打开成功且输入可用
@@ -504,11 +634,15 @@ f1.getline(s, n);         // 读取一行到字符串 s[n]
 ofstream f2("filename");  // 以写入方式打开文件
 if (f2) f2 << x;          // 写入文件
 ```
+
 #### IOMANIP.H, IOMANIP（输出格式化）
+
 ```cpp
 cout << setw(6) << setprecision(2) << setfill('0') << 3.1; // 输出 "003.10"
 ```
+
 #### STRING（可变长度字符数组）
+
 ```cpp
 string s1, s2="hello";    // 创建字符串
 s1.size(), s2.size();     // 字符数：0、5
@@ -519,7 +653,9 @@ s1.substr(m, n);          // 从 s1[m] 开始，长度为 n 的子字符串
 s1.c_str();               // 转成 const char*
 getline(cin, s);          // 读取以 '\n' 结尾的一行
 ```
+
 #### VECTOR（可变长度数组/栈，并带内存分配）
+
 ```cpp
 vector<int> a(10);        // a[0]..a[9] 是 int（默认大小为 0）
 a.size();                 // 元素个数（10）
@@ -535,19 +671,28 @@ vector<int> b(a.begin(), a.end());  // b 是 a 的副本
 vector<T> c(n, x);        // c[0]..c[n-1] 初始化为 x
 T d[10]; vector<T> e(d, d+10);      // e 从 d 初始化
 ```
+
 #### DEQUE（数组/栈/队列）
+
 `deque<T>` 和 `vector<T>` 类似，但是还支持:
+
 ```cpp
 a.push_front(x);          // 把 x 放到 a[0]，其余元素后移
 a.pop_front();            // 删除 a[0]，其余元素前移
 ```
+
 #### UTILITY（Pair）
+
 ```cpp
 pair<string, int> a("hello", 3);  // 一个 2 元素结构体
 a.first;                  // "hello"
 a.second;                 // 3
 ```
+
 #### MAP（关联数组）
+
+`std::map`使用红黑树,，平均查找复杂度`O(log N)`
+
 ```cpp
 map<string, int> a;       // 从 string 到 int 的map
 a["hello"]=3;             // 添加或替换元素 a["hello"]
@@ -555,12 +700,121 @@ for (map<string, int>::iterator p=a.begin(); p!=a.end(); ++p)
   cout << (*p).first << (*p).second;  // 输出 hello, 3
 a.size();                 // 1
 ```
+
+#### UNORDERED_MAP，UNORDERED_SET（哈希表）
+
+`std::unordered_map`使用哈希表，平均查找复杂度`O(1)`
+
+```cpp
+#include <unordered_map>
+std::unordered_map<std::string, int> age;
+age["Alice"] = 20;
+```
+
+```cpp
+std::unordered_set<std::string> names;
+names.insert("Alice");
+names.contains("Bob")     // 返回 false
+names.find("Bob") != names.end()  // 返回false    
+```
+
+|          | `std::map` | `std::unordered_map` |
+| -------- | ---------- | -------------------- |
+| 底层       | 红黑树        | 哈希表                  |
+| 查找       | O(log N)   | 平均 O(1)              |
+| key 是否有序 | **有序**     | **无序**               |
+| 遍历       | 按 key 排序   | 没有排序保证               |
+| 支持范围查询   | 很方便        | 不适合                  |
+| 典型用途     | 需要排序       | 只需要快速查找              |
+
+#### STACK，QUEUE，PRIORITY_QUEUE（栈，队列，优先队列）
+
+它们叫`container adapters`（容器适配器）。他们并不是像 vector、list 那样的底层容器。而是在其他容器之上套了一层接口，只允许你以某种方式操作它。
+
+```cpp
+#include <stack>
+std::stack<int> s;
+s.push(10);
+s.top();
+s.pop();
+```
+
+```cpp
+#include <queue>
+std::queue<std::string> q;
+q.push("Alice");
+q.front();
+q.pop();
+q.empty();
+```
+
+```cpp
+std::priority_queue<int> pq;    // 默认大顶堆max heap
+pq.push(10);
+pq.top();
+pq.pop();
+std::priority_queue<            // 定义小顶堆
+    int,                        // 元素类型
+    std::vector<int>,           // 底层容器
+    std::greater<int>           // 比较器
+> pq;
+```
+
 #### ALGORITHM（60 种算法集合，基于迭代器）
+
 ```cpp
 min(x, y); max(x, y);     // 返回 x、y 中较小/较大的值（要求类型定义 <）
 swap(x, y);               // 交换变量 x 和 y 的值
 sort(a, a+n);             // 按 < 对数组 a[0]..a[n-1] 进行排序
 sort(a.begin(), a.end()); // 对 vector 或 deque 进行排序
+```
+
+#### RANGE（范围）
+
+```cpp
+vector<int> v = {5, 2, 8, 1, 3};
+sort(v.begin(), v.end()); // 旧方法
+ranges::sort(v);          // 新方法
+ranges::sort(v, std::greater{});  // 临时创建一个 std::greater<int> 做比较器，自动模板推导省略了<int>
+ranges::find(v, 8);
+ranges::count(v, 8);
+ranges::reverse(v);
+ranges::for_each(v, [](int x){cout << x;});
+ranges::find_if(v, [](int x){return x % 2 == 0;});
+
+int arr[] = {5, 2, 8, 1, 3};
+std::ranges::sort(arr);   // 对array 有效
+```
+
+##### LAZY VIEW（惰性视图）
+
+```cpp
+auto even = v             // 偶数视图
+          | std::views::filter([](int x) {
+                return x % 2 == 0;
+            });
+for (int x : even) {      // 真正遍历他的时候才从 v 提取数据
+    std::cout << x << '\n';
+}
+
+// 串行range
+auto result =
+    v
+    | std::views::filter([](int x) {
+          return x % 2 == 0;
+      })
+    | std::views::transform([](int x) {
+          return x * 10;
+      })
+    | std::views::take(2);
+
+// 转化成容器
+auto result =
+    v
+    | std::views::filter([](int x) {
+          return x % 2 == 0;
+      })
+    | std::ranges::to<std::vector>();
 ```
 
 #### OPTIONAL，VARIANT，TUPLE （实用代数类型）
@@ -575,6 +829,7 @@ sort(a.begin(), a.end()); // 对 vector 或 deque 进行排序
 | `optional<A>`          | `A + 1` | A 或者 nothing |
 
 `std::optional`
+
 ```cpp
 #include <optional>
 std::optional<int> a1 = 1;// std::optional<int> 有一个可以从 int 构造的构造函数 optional(const T& value) 
@@ -585,7 +840,9 @@ a2.has_value();           // 返回false（或0）
 a2.value_or(18);          // 返回18
 std::optional<User>       // 本身拥有那个T
 ```
+
 `std::variant`
+
 ```cpp
 std::variant<int, std::string> value;
 value = 123;              // value为123 int
@@ -604,7 +861,9 @@ using Event = std::variant<MouseEvent, KeyEvent>;
 Event event = MouseEvent{1, 2};
 Event event = KeyEvent{6};
 ```
+
 `std::tuple`
+
 ```cpp
 std::tuple<int, double, std::string> t{
     10,
@@ -620,7 +879,3 @@ std::tuple<int, int, int> get_position() {
 }
 auto [x, y, z] = get_position();
 ```
-
-Future topics:
-
-1. 现代 C++ 核心语法与特性auto 与 decltype 类型推导：auto x = ... 自动类型推导，decltype(expr) 编译期类型推导。Lambda 表达式 (Lambda Expressions)：语法结构：[capture](params) -> ret { body }捕获方式：[&]（引用捕获）、[=]（值捕获）、[this]。constexpr 与 Compile-time 计算：constexpr 编译期常量/函数，C++20 的 consteval（强制编译期）与 constinit。C++20/23 新特性：Concepts & Constraints（概念与约束）：简化模板限定，替代复杂的 enable_if。Ranges（std::ranges）：例如 std::ranges::sort(v) 代替 std::sort(v.begin(), v.end())。Coroutines（协程）。2. STL 容器与常用类补充补充容器类型：哈希表：std::unordered_map / std::unordered_set（平均 $O(1)$ 查找，对比 std::map 的红黑树 $O(\log N)$）。容器适配器：std::stack、std::queue、std::priority_queue（大顶堆/小顶堆）。无拷贝视图：std::string_view（C++17，避免字符串截取/传递时的额外内存拷贝）。
