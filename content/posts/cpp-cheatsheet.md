@@ -620,3 +620,7 @@ std::tuple<int, int, int> get_position() {
 }
 auto [x, y, z] = get_position();
 ```
+
+Future topics:
+
+1. 现代 C++ 核心语法与特性auto 与 decltype 类型推导：auto x = ... 自动类型推导，decltype(expr) 编译期类型推导。Lambda 表达式 (Lambda Expressions)：语法结构：[capture](params) -> ret { body }捕获方式：[&]（引用捕获）、[=]（值捕获）、[this]。constexpr 与 Compile-time 计算：constexpr 编译期常量/函数，C++20 的 consteval（强制编译期）与 constinit。C++20/23 新特性：Concepts & Constraints（概念与约束）：简化模板限定，替代复杂的 enable_if。Ranges（std::ranges）：例如 std::ranges::sort(v) 代替 std::sort(v.begin(), v.end())。Coroutines（协程）。2. STL 容器与常用类补充补充容器类型：哈希表：std::unordered_map / std::unordered_set（平均 $O(1)$ 查找，对比 std::map 的红黑树 $O(\log N)$）。容器适配器：std::stack、std::queue、std::priority_queue（大顶堆/小顶堆）。无拷贝视图：std::string_view（C++17，避免字符串截取/传递时的额外内存拷贝）。
