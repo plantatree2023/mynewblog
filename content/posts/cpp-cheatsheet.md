@@ -562,3 +562,61 @@ swap(x, y);               // 交换变量 x 和 y 的值
 sort(a, a+n);             // 按 < 对数组 a[0]..a[n-1] 进行排序
 sort(a.begin(), a.end()); // 对 vector 或 deque 进行排序
 ```
+
+#### OPTIONAL，VARIANT，TUPLE （实用代数类型）
+
+实用代数类型是可以通过 Sum（+）和 Product（×）组合出来的数据类型，其中：
+
+| C++                    | 数学/类型理论 | 意思           |
+| ---------------------- | ------- | ------------ |
+| `tuple<A, B>`          | `A × B` | A **和** B 都有 |
+| `struct { A a; B b; }` | `A × B` | A **和** B 都有 |
+| `variant<A, B>`        | `A + B` | A **或者** B   |
+| `optional<A>`          | `A + 1` | A 或者 nothing |
+
+`std::optional`
+```cpp
+#include <optional>
+std::optional<int> a1 = 1;// std::optional<int> 有一个可以从 int 构造的构造函数 optional(const T& value) 
+std::optional<int> a2 = std::nullopt;
+if (a1) {return 12;}      // 返回12
+a1.has_value();           // 返回true（或1）
+a2.has_value();           // 返回false（或0）
+a2.value_or(18);          // 返回18
+std::optional<User>       // 本身拥有那个T
+```
+`std::variant`
+```cpp
+std::variant<int, std::string> value;
+value = 123;              // value为123 int
+std::holds_alternative<int>(value)    // 返回true（1）
+std::get<int>(value);     // 返回 123
+value = "1232";
+std::holds_alternative<std::string>(value)    // 返回true（1）
+
+std::visit([](auto&& x) { // 无论是int还是 string，lambda都处理
+    std::cout << x << "\n";
+}, value);
+
+struct MouseEvent {int x, y;};
+struct KeyEvent {int key;};
+using Event = std::variant<MouseEvent, KeyEvent>;
+Event event = MouseEvent{1, 2};
+Event event = KeyEvent{6};
+```
+`std::tuple`
+```cpp
+std::tuple<int, double, std::string> t{
+    10,
+    3.14,
+    "hello"
+};
+std::get<0>(t);         // 返回 10
+std::get<2>(t);         // 返回 "hello"
+auto [x, y, name] = t;  // x -> 10, y -> 3.14, name -> hello
+
+std::tuple<int, int, int> get_position() {
+    return {10, 20, 30};
+}
+auto [x, y, z] = get_position();
+```
